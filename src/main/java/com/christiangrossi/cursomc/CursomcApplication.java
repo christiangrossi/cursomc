@@ -9,10 +9,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.christiangrossi.cursomc.domain.Categoria;
 import com.christiangrossi.cursomc.domain.Cidade;
+import com.christiangrossi.cursomc.domain.Cliente;
+import com.christiangrossi.cursomc.domain.Endereco;
 import com.christiangrossi.cursomc.domain.Estado;
 import com.christiangrossi.cursomc.domain.Produto;
+import com.christiangrossi.cursomc.domain.enums.TipoCliente;
 import com.christiangrossi.cursomc.repositories.CategoriaRepository;
 import com.christiangrossi.cursomc.repositories.CidadeRepository;
+import com.christiangrossi.cursomc.repositories.ClienteRepository;
+import com.christiangrossi.cursomc.repositories.EnderecoRepository;
 import com.christiangrossi.cursomc.repositories.EstadoRepository;
 import com.christiangrossi.cursomc.repositories.ProdutoRepository;
 
@@ -27,6 +32,10 @@ public class CursomcApplication implements CommandLineRunner {
 	private EstadoRepository estadoRepository;
 	@Autowired
 	private CidadeRepository cidadeRepository;
+	@Autowired
+	private ClienteRepository clienteRepository;
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -64,5 +73,18 @@ public class CursomcApplication implements CommandLineRunner {
 
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
+
+		Cliente cli1 = new Cliente(null, "Maria Silva", "mariasilva@gmail.com", "54673898767",
+				TipoCliente.PESSOAFISICA);
+		cli1.getTelefones().addAll(Arrays.asList("45965587", "45968899"));
+
+		Endereco end1 = new Endereco(null, "Rua flores", "300", "apto 303", "Jardim", "38220834", cli1, c1);
+		Endereco end2 = new Endereco(null, "Avenida Matos", "106", "Sala 800", "Centro", "38777012", cli1, c2);
+		
+		cli1.getEnderecos().addAll(Arrays.asList(end1, end2));
+		
+		clienteRepository.saveAll(Arrays.asList(cli1));
+		enderecoRepository.saveAll(Arrays.asList(end1, end2));
+	
 	}
 }
