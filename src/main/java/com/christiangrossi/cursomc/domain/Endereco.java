@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Endereco implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -22,6 +24,7 @@ public class Endereco implements Serializable{
 	private String bairro;
 	private String cep;
 	
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name="cliente_id")
 	private Cliente cliente;
@@ -103,6 +106,14 @@ public class Endereco implements Serializable{
 		this.cliente = cliente;
 	}
 
+	private Cidade getCidade() {
+		return cidade;
+	}
+
+	private void setCidade(Cidade cidade) {
+		this.cidade = cidade;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -126,14 +137,6 @@ public class Endereco implements Serializable{
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-
-	private Cidade getCidade() {
-		return cidade;
-	}
-
-	private void setCidade(Cidade cidade) {
-		this.cidade = cidade;
 	}
 	
 }
