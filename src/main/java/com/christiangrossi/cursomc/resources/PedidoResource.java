@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.christiangrossi.cursomc.domain.Pedido;
 import com.christiangrossi.cursomc.services.PedidoService;
 
 import javassist.tools.rmi.ObjectNotFoundException;
@@ -19,8 +20,8 @@ public class PedidoResource {
 	private PedidoService service;
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ResponseEntity<?> listar(@PathVariable Integer id) throws ObjectNotFoundException {
-		return ResponseEntity.ok(service.buscar(id));
+	public ResponseEntity<Pedido> find(@PathVariable Integer id) throws ObjectNotFoundException {
+		return ResponseEntity.ok(service.find(id));
 	}
 	
 }
