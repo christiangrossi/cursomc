@@ -32,4 +32,11 @@ public class CategoriaService {
 		find(categoria.getId());
 		return repository.save(categoria);
 	}
+
+	public void delete(Integer id) {
+		find(id);
+		repository.deleteById(id);
+		
+	}
+
 }
