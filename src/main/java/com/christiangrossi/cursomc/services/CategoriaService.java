@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.christiangrossi.cursomc.domain.Categoria;
+import com.christiangrossi.cursomc.domain.Cliente;
 import com.christiangrossi.cursomc.dto.CategoriaDTO;
 import com.christiangrossi.cursomc.repositories.CategoriaRepository;
 import com.christiangrossi.cursomc.services.exceptions.DataIntegrityException;
@@ -34,9 +35,14 @@ public class CategoriaService {
 		return repository.save(categoria);
 	}
 
-	public Categoria update(Categoria categoria) {
-		find(categoria.getId());
-		return repository.save(categoria);
+	public Categoria update(Categoria obj) {
+		Categoria newObj = find(obj.getId());
+		updateData(newObj, obj);
+		return repository.save(newObj);
+	}
+
+	private void updateData(Categoria newObj, Categoria obj) {
+		newObj.setNome(obj.getNome());
 	}
 
 	public void delete(Integer id) {
