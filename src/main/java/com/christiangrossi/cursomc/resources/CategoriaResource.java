@@ -64,12 +64,7 @@ public class CategoriaResource {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
-		try {
-			service.delete(id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível excluir uma categoria com produtos associados");
-		}
-
+		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 
