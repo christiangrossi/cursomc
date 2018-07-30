@@ -9,11 +9,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.christiangrossi.cursomc.domain.Cidade;
 import com.christiangrossi.cursomc.domain.Cliente;
-import com.christiangrossi.cursomc.domain.Cliente;
+import com.christiangrossi.cursomc.domain.Endereco;
+import com.christiangrossi.cursomc.domain.enums.TipoCliente;
 import com.christiangrossi.cursomc.dto.ClienteDTO;
+import com.christiangrossi.cursomc.dto.ClienteNewDTO;
 import com.christiangrossi.cursomc.repositories.ClienteRepository;
+import com.christiangrossi.cursomc.repositories.EnderecoRepository;
 import com.christiangrossi.cursomc.services.exceptions.DataIntegrityException;
 import com.christiangrossi.cursomc.services.exceptions.ObjectNotFoundException;
 
@@ -21,6 +26,8 @@ import com.christiangrossi.cursomc.services.exceptions.ObjectNotFoundException;
 public class ClienteService {
 	@Autowired
 	private ClienteRepository repository;
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 
 	public Cliente find(Integer id) {
 		Optional<Cliente> obj = repository.findById(id);
@@ -28,6 +35,13 @@ public class ClienteService {
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
 
+	}
+	@Transactional
+	public Cliente insert(Cliente obj) {
+		obj.setId(null); // para garantir que id será nulo e objeto será inserido ao invés de atualizado
+		obj = repository.save(obj);
+		enderecoRepository.saveAll(obj.getEnderecos());
+		return obj;
 	}
 
 	public Cliente update(Cliente cliente) {
@@ -41,12 +55,13 @@ public class ClienteService {
 		newCliente.setEmail(cliente.getEmail());
 	}
 
+	
 	public void delete(Integer id) {
 		find(id);
 		try {
 			repository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível excluir pois já entidades relacionadas");
+			throw new DataIntegrityException("Não é possível excluir o cliente pois existem pedidos relacionados");
 		}
 	}
 
@@ -61,5 +76,22 @@ public class ClienteService {
 
 	public Cliente fromDTO(ClienteDTO dto) {
 		return new Cliente(dto.getId(), dto.getNome(), dto.getEmail(), null, null);
+	}
+
+	public Cliente fromDTO(ClienteNewDTO dto) {
+		Cliente cli = new Cliente(null, dto.getNome(), dto.getEmail(), dto.getCpfOuCnpj(),
+				TipoCliente.toEnum(dto.getTipo()));
+		Cidade cid = new Cidade(dto.getCidadeId(), null, null);
+		Endereco end = new Endereco(null, dto.getLogradouro(), dto.getNumero(), dto.getComplemento(), dto.getBairro(),
+				dto.getCep(), cli, cid);
+		cli.getTelefones().add(dto.getTelefone1());
+		
+		if (dto.getTelefone2() != null) {
+			cli.getTelefones().add(dto.getTelefone2());
+		}
+		if (dto.getTelefone3() != null) {
+			cli.getTelefones().add(dto.getTelefone3());
+		}
+		return cli;
 	}
 }

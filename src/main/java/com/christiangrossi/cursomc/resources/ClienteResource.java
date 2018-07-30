@@ -1,5 +1,6 @@
 package com.christiangrossi.cursomc.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.christiangrossi.cursomc.domain.Cliente;
-import com.christiangrossi.cursomc.domain.Cliente;
 import com.christiangrossi.cursomc.dto.ClienteDTO;
+import com.christiangrossi.cursomc.dto.ClienteNewDTO;
 import com.christiangrossi.cursomc.services.ClienteService;
 import com.christiangrossi.cursomc.services.exceptions.DataIntegrityException;
 
@@ -36,6 +38,16 @@ public class ClienteResource {
 				.collect(Collectors.toList());
 		return ResponseEntity.ok().body(categoriasDTO);
 	}
+	
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO dto) {
+		Cliente categoria = service.fromDTO(dto);
+		categoria = service.insert(categoria);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoria.getId())
+				.toUri();
+		return ResponseEntity.created(uri).build();
+	}
+
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Cliente> find(@PathVariable Integer id) {
