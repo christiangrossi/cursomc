@@ -42,12 +42,24 @@ public class Pedido implements Serializable{
 	@OneToMany(mappedBy="id.pedido")
 	private Set<ItemPedido> itens = new HashSet<>();
 	
+	public Pedido() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	public Pedido(Integer id, Date instante, Cliente cliente, Endereco enderecoDeEntrega) {
 		super();
 		this.id = id;
 		this.instante = instante;
 		this.cliente = cliente;
 		this.enderecoDeEntrega = enderecoDeEntrega;
+	}
+	
+	public double getValorTotal() {
+		double soma = 0.0;
+		for (ItemPedido ip : itens) {
+			soma = soma + ip.getSubTotal();
+		}
+		return soma;
 	}
 
 	public Set<ItemPedido> getItens() {
@@ -58,10 +70,6 @@ public class Pedido implements Serializable{
 		this.itens = itens;
 	}
 
-	public Pedido() {
-		// TODO Auto-generated constructor stub
-	}
-	
 	public Integer getId() {
 		return id;
 	}
