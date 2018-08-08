@@ -13,6 +13,7 @@ public class ItemPedido implements Serializable {
 	@JsonIgnore
 	@EmbeddedId
 	private ItemPedidoPK id = new ItemPedidoPK();
+	
 	private double desconto;
 	private Integer quantidade;
 	private Double preco;

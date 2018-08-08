@@ -45,6 +45,7 @@ public class PedidoService {
 
 	@Transactional
 	public Pedido insert(@Valid Pedido pedido) {
+		System.err.println("num itens: " + pedido.getItens().size());
 		pedido.setId(null);
 		pedido.setInstante(new Date());
 		pedido.getPagamento().setEstado(EstadoPagamento.PENDENTE);
@@ -62,6 +63,7 @@ public class PedidoService {
 			ip.setPedido(pedido);
 		}
 		itemPedidoRepository.saveAll(pedido.getItens());
+		System.err.println(pedido.getItens().size());
 		return pedido;
 	}
 }
